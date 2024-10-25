@@ -1,0 +1,53 @@
+body {
+    border: 2px solid;
+    padding: 10px;
+    margin: 10px;
+}
+
+table {
+    border: 2px solid; 
+    padding: 2px;
+}
+
+th, td {
+    border: 1px solid; 
+    padding: 2px 8px; 
+    word-wrap: break-word; 
+    max-width: 250px;
+}
+
+input {
+    padding: 6px 8px;
+    margin: 8px 2px;
+    box-sizing: border-box;
+}
+
+input[id="age"] {
+    width: 70px;
+}
+
+input[id="business_name"] {
+    width: 250px;
+}
+
+input[id="home_address"], input[id="franchise_location"] {
+    width: 620px;
+}
+
+input:focus {
+    background-color: #2de5fd;
+}
+
+textarea {
+    padding: 6px 8px;
+    margin: 8px 2px;
+    box-sizing: border-box;
+    resize: none;
+}
+
+select {
+    padding: 6px 8px;
+    margin: 8px 2px;
+    box-sizing: border-box;
+    width: fit-content;
+}
