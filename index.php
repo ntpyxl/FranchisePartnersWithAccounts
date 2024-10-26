@@ -48,7 +48,7 @@ if(!isset($_SESSION['user_id']) || !isset($_SESSION['username'])) {
         </table> <br>
 
         <input type="submit" value="Add Franchise" onclick="window.location.href='addFranchise.php?user_id=<?php echo $_SESSION['user_id']; ?>';">
-        <input type="submit" value="View Other Partners' Franchises" onclick="window.location.href='viewOtherPartners.php'">
+        <input type="submit" value="View Other Partners and Franchises" onclick="window.location.href='viewOtherPartners.php'">
 
         <br><br><br>
         <h3>Your profile</h3>

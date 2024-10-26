@@ -68,7 +68,7 @@ if(isset($_POST['editUserButton'])) {
 if (isset($_POST['removeUserButton'])) {
 	$function = removeUser($pdo, $_GET['user_id']);
 	if($function) {
-		header("Location: ../logout.php");
+		header("Location: logout.php");
 	} else {
 		echo "<h2>User removal failed.</h2>";
 		echo '<a href="../index.php">';

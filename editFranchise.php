@@ -16,7 +16,7 @@ if(!isset($_SESSION['user_id']) || !isset($_SESSION['username'])) {
         <h3>Please edit the according values as you intend.</h3>
 
         <?php $PartnerIDData = getUserByID($pdo, $_GET['user_id']); ?>
-        <b>Currently viewing:</b> <br>
+        <b>Franchise owner:</b> <br>
         <b>User ID:</b> <?php echo $PartnerIDData['user_id']; ?> <br>
         <b>Partner Name:</b> <?php echo $PartnerIDData['first_name'] . ' ' . $PartnerIDData['last_name']; ?> <br><br>
 

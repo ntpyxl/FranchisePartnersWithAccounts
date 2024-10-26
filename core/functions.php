@@ -1,6 +1,10 @@
 <?php
 require_once 'dbConfig.php';
 
+//
+// user getters
+//
+
 function getAllPartners($pdo) {
     $query = "SELECT * FROM users";
 	$statement = $pdo -> prepare($query);
@@ -30,6 +34,10 @@ function getUserByID($pdo, $user_id) {
 		return $statement -> fetch();
 	}
 }
+
+//
+// register and login functions
+//
 
 function checkUsernameExistence($pdo, $username) {
 	$query = "SELECT * FROM user_accounts WHERE username = ?";
@@ -96,6 +104,10 @@ function loginUser($pdo, $username, $password) {
 	}
 }
 
+//
+// user data functions
+//
+
 function updateUser($pdo, $first_name, $last_name, $age, $gender, $birthdate, $home_address, $user_id) {
 	$query = "UPDATE users
 				SET first_name = ?,
@@ -122,12 +134,18 @@ function removeUser($pdo, $user_id) {
 		$query2 = "DELETE FROM users WHERE user_id = ?";
 		$statement2 = $pdo -> prepare($query2);
 		$executeQuery2 = $statement2 -> execute([$user_id]);
+
+		$query3 = "DELETE FROM user_accounts WHERE user_id = ?";
+		$statement3 = $pdo -> prepare($query3);
+		$executeQuery3 = $statement3 -> execute([$user_id]);
 		
-		if ($executeQuery2) {
+		if ($executeQuery2 && $executeQuery2) {
 			return true;
 		}
 	}
 }
+
+// franchise getters
 
 function getFranchiseByID($pdo, $franchise_id) {
 	$query = "SELECT
@@ -177,6 +195,10 @@ function getNewestFranchiseID($pdo) {
 		}
 }
 
+//
+// franchise data functions
+//
+
 function addFranchise($pdo, $user_id, $business_name, $franchise_location) {
 	$query = "INSERT INTO franchises (owner_id, business_name, franchise_location) VALUES (?, ?, ?)";
     $statement = $pdo -> prepare($query);
@@ -218,6 +240,10 @@ function removeFranchise($pdo, $franchise_id) {
 		return true;	
 	}
 }
+
+//
+// franchise logging functions
+//
 
 function logFranchiseAction($pdo, $log_desc, $franchise_id, $owner_id, $done_by) {
 	$query = "INSERT INTO franchise_logs (log_desc, franchise_id, owner_id, done_by) VALUES (?, ?, ?, ?)";
