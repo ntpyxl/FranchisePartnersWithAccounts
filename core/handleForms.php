@@ -3,23 +3,31 @@ require_once 'dbConfig.php';
 require_once 'functions.php';
 
 if(isset($_POST['registerButton'])) {
-    $username = trim($_POST['username']);
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $first_name = trim($_POST['first_name']);
-    $last_name = trim($_POST['last_name']);
+    $username = sanitizeInput($_POST['username']);
+    $password = $_POST['password'];
+    $hashed_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $confirm_password = sanitizeInput($_POST['confirm_password']);
+    $first_name = sanitizeInput($_POST['first_name']);
+    $last_name = sanitizeInput($_POST['last_name']);
     $age = $_POST['age'];
     $gender = $_POST['gender'];
     $birthdate = $_POST['birthdate'];
-    $home_address = trim($_POST['home_address']);
+    $home_address = sanitizeInput($_POST['home_address']);
 
-    $function = addUser($pdo, $username, $password, $first_name, $last_name, $age, $gender, $birthdate, $home_address);
+    $function = addUser($pdo, $username, $password, $hashed_password, $confirm_password, $first_name, $last_name, $age, $gender, $birthdate, $home_address);
     if($function == "registrationSuccess") {
         header("Location: ../login.php");
     } elseif($function == "UsernameAlreadyExists") {
         $_SESSION['message'] = "Username already exists! Please choose a different username!";
         header("Location: ../register.php");
-    } elseif($function == "userAlreadyExists") {
+    } elseif($function == "UserAlreadyExists") {
         $_SESSION['message'] = "User already exists! Please edit your existing account instead!";
+        header("Location: ../register.php");
+    } elseif($function == "PasswordNotMatch") {
+        $_SESSION['message'] = "Password does not match!";
+        header("Location: ../register.php");
+    } elseif($function == "InvalidPassword") {
+        $_SESSION['message'] = "Password is not strong enough! Make sure it is 8 letters long, has uppercase and lowercase characters, and numbers.";
         header("Location: ../register.php");
     } else {
         echo "<h2>User addition failed.</h2>";
@@ -30,7 +38,7 @@ if(isset($_POST['registerButton'])) {
 }
 
 if(isset($_POST['loginButton'])) {
-    $username = trim($_POST['username']);
+    $username = sanitizeInput($_POST['username']);
     $password = $_POST['password'];
 
     $function = loginUser($pdo, $username, $password);
@@ -46,12 +54,12 @@ if(isset($_POST['loginButton'])) {
 }
 
 if(isset($_POST['editUserButton'])) {
-    $first_name = trim($_POST['first_name']);
-    $last_name = trim($_POST['last_name']);
+    $first_name = sanitizeInput($_POST['first_name']);
+    $last_name = sanitizeInput($_POST['last_name']);
     $age = $_POST['age'];
     $gender = $_POST['gender'];
     $birthdate = $_POST['birthdate'];
-    $home_address = trim($_POST['home_address']);
+    $home_address = sanitizeInput($_POST['home_address']);
     $user_id = $_GET['user_id'];
 
     $function = updateUser($pdo, $first_name, $last_name, $age, $gender, $birthdate, $home_address, $user_id);
@@ -78,8 +86,8 @@ if (isset($_POST['removeUserButton'])) {
 }
 
 if (isset($_POST['addFranchiseButton'])) {
-    $business_name = trim($_POST['business_name']);
-    $franchise_location = trim($_POST['franchise_location']);
+    $business_name = sanitizeInput($_POST['business_name']);
+    $franchise_location = sanitizeInput($_POST['franchise_location']);
 
     $function = addFranchise($pdo, $_GET['user_id'], $business_name, $franchise_location);
     if($function) {
@@ -93,8 +101,8 @@ if (isset($_POST['addFranchiseButton'])) {
 }
 
 if (isset($_POST['editFranchiseButton'])) {
-    $business_name = trim($_POST['business_name']);
-    $franchise_location = trim($_POST['franchise_location']);
+    $business_name = sanitizeInput($_POST['business_name']);
+    $franchise_location = sanitizeInput($_POST['franchise_location']);
 
     $function = editFranchise($pdo, $business_name, $franchise_location, $_GET['franchise_id']);
     if($function) {

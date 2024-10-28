@@ -1,10 +1,16 @@
 <?php
 require_once 'dbConfig.php';
 
+function sanitizeInput($input) {
+	$input = trim($input);
+	$input = stripslashes($input);
+	$input = htmlspecialchars($input);
+	return $input;
+}
+
 //
 // user getters
 //
-
 function getAllPartners($pdo) {
     $query = "SELECT * FROM users";
 	$statement = $pdo -> prepare($query);
@@ -38,7 +44,6 @@ function getUserByID($pdo, $user_id) {
 //
 // register and login functions
 //
-
 function checkUsernameExistence($pdo, $username) {
 	$query = "SELECT * FROM user_accounts WHERE username = ?";
 	$statement = $pdo -> prepare($query);
@@ -64,17 +69,48 @@ function checkUserExistence($pdo, $first_name, $last_name, $age, $gender, $birth
 	}
 }
 
-function addUser($pdo, $username, $password, $first_name, $last_name, $age, $gender, $birthdate, $home_address) {
+function validatePassword($password) {
+	if(strlen($password) >= 8) {
+		$hasLower = false;
+		$hasUpper = false;
+		$hasNumber = false;
+
+		for($i = 0; $i < strlen($password); $i++) {
+			if(ctype_lower($password[$i])) {
+				$hasLower = true;
+			}
+			if(ctype_upper($password[$i])) {
+				$hasUpper = true;
+			}
+			if(ctype_digit($password[$i])) {
+				$hasNumber = true;
+			}
+
+			if($hasLower && $hasUpper && $hasNumber) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+function addUser($pdo, $username, $password, $hashed_password, $confirm_password, $first_name, $last_name, $age, $gender, $birthdate, $home_address) {
 	if(checkUsernameExistence($pdo, $username)) {
 		return "UsernameAlreadyExists";
 	}
 	if(checkUserExistence($pdo, $first_name, $last_name, $age, $gender, $birthdate)) {
 		return "UserAlreadyExists";
 	}
+	if($password != $confirm_password) {
+		return "PasswordNotMatch";
+	}
+	if(!validatePassword($password)) {
+		return "InvalidPassword";
+	}
 
 	$query1 = "INSERT INTO user_accounts (username, user_password) VALUES (?, ?)";
 	$statement1 = $pdo -> prepare($query1);
-	$executeQuery1 = $statement1 -> execute([$username, $password]);
+	$executeQuery1 = $statement1 -> execute([$username, $hashed_password]);
 
     $query2 = "INSERT INTO users (first_name, last_name, age, gender, birthdate, home_address) VALUES (?, ?, ?, ?, ?, ?)";
     $statement2 = $pdo -> prepare($query2);
@@ -107,7 +143,6 @@ function loginUser($pdo, $username, $password) {
 //
 // user data functions
 //
-
 function updateUser($pdo, $first_name, $last_name, $age, $gender, $birthdate, $home_address, $user_id) {
 	$query = "UPDATE users
 				SET first_name = ?,
@@ -145,8 +180,9 @@ function removeUser($pdo, $user_id) {
 	}
 }
 
+//
 // franchise getters
-
+//
 function getFranchiseByID($pdo, $franchise_id) {
 	$query = "SELECT
 				franchise_id,
@@ -198,7 +234,6 @@ function getNewestFranchiseID($pdo) {
 //
 // franchise data functions
 //
-
 function addFranchise($pdo, $user_id, $business_name, $franchise_location) {
 	$query = "INSERT INTO franchises (owner_id, business_name, franchise_location) VALUES (?, ?, ?)";
     $statement = $pdo -> prepare($query);
@@ -244,7 +279,6 @@ function removeFranchise($pdo, $franchise_id) {
 //
 // franchise logging functions
 //
-
 function logFranchiseAction($pdo, $log_desc, $franchise_id, $owner_id, $done_by) {
 	$query = "INSERT INTO franchise_logs (log_desc, franchise_id, owner_id, done_by) VALUES (?, ?, ?, ?)";
 	$statement = $pdo -> prepare($query);

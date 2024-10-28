@@ -18,7 +18,10 @@
             <input type="text" name="username" required>
 
             <label for="password">Password</label>
-            <input type="password" name="password" required> <br><br>
+            <input type="password" name="password" required> 
+            
+            <label for="confirm_password">Confirm password</label>
+            <input type="password" name="confirm_password" required> <br><br>
 
             <label for="first_name">First name</label>
             <input type="text" name="first_name" id="first_name" required>
