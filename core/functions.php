@@ -163,7 +163,7 @@ function updateUser($pdo, $first_name, $last_name, $age, $gender, $birthdate, $h
 function removeUser($pdo, $user_id) {
 	$query1 = "DELETE FROM franchises WHERE owner_id = ?";
 	$statement1 = $pdo -> prepare($query1);
-	$executeQuery1 = $statement1 -> execute([$partner_id]);
+	$executeQuery1 = $statement1 -> execute([$user_id]);
 
 	if($executeQuery1) {
 		$query2 = "DELETE FROM users WHERE user_id = ?";
